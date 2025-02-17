@@ -3,46 +3,26 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useAuth } from "./AuthProvider"
+import { Dancing_Script } from "next/font/google"
+
+const dancingScript = Dancing_Script({ subsets: ["latin"] })
 
 const Navigation = () => {
   const pathname = usePathname()
   const { session, signOut } = useAuth()
 
   return (
-    <nav className="bg-background">
+    <nav className="bg-background border-b border-blood">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-        <Link href="/" className="text-3xl font-bold">
+        <Link href="/events" className="text-xl text-blood">
+          Events
+        </Link>
+        <Link href="/" className={`text-6xl font-bold text-blood ${dancingScript.className}`}>
           Red Jacks
         </Link>
-        <ul className="flex space-x-4">
-          <li>
-            <Link href="/events" className={pathname === "/events" ? "text-blue-300" : "hover:text-gray-300"}>
-              Events
-            </Link>
-          </li>
-          {session ? (
-            <>
-              <li>
-                <Link
-                  href="/dashboard"
-                >
-                  Dashboard
-                </Link>
-              </li>
-              <li>
-                <button onClick={signOut} className="hover:text-gray-300">
-                  Sign Out
-                </button>
-              </li>
-            </>
-          ) : (
-            <li>
-              <Link href="/login" className={pathname === "/login" ? "text-blue-300" : "hover:text-gray-300"}>
-                Login
-              </Link>
-            </li>
-          )}
-        </ul>
+        <Link href="/account" className="text-xl text-blood">
+          Account
+        </Link>
       </div>
     </nav>
   )

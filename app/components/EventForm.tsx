@@ -64,8 +64,8 @@ export default function EventForm() {
     <form onSubmit={handleSubmit} className="space-y-4">
       {error && <div className="text-red-500">{error}</div>}
       <div>
-        <label htmlFor="showTitle" className="block mb-2">
-          Show Title
+        <label htmlFor="showTitle" className="block mb-2 text-black">
+          Show Title (combined band names)
         </label>
         <input
           id="showTitle"
@@ -77,7 +77,7 @@ export default function EventForm() {
         />
       </div>
       <div>
-        <label htmlFor="doorTime" className="block mb-2">
+        <label htmlFor="doorTime" className="block mb-2 text-black">
           Door Time
         </label>
         <input
@@ -90,7 +90,7 @@ export default function EventForm() {
         />
       </div>
       <div>
-        <label htmlFor="startTime" className="block mb-2">
+        <label htmlFor="startTime" className="block mb-2 text-black">
           Start Time
         </label>
         <input
@@ -103,7 +103,7 @@ export default function EventForm() {
         />
       </div>
       <div>
-        <label htmlFor="capacity" className="block mb-2">
+        <label htmlFor="capacity" className="block mb-2 text-black">
           Capacity
         </label>
         <input
@@ -116,7 +116,7 @@ export default function EventForm() {
         />
       </div>
       <div>
-        <label htmlFor="showFlyer" className="block mb-2">
+        <label htmlFor="showFlyer" className="block mb-2 text-black">
           Show Flyer
         </label>
         <input
