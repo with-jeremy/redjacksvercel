@@ -22,21 +22,18 @@ export default async function Home() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {events.map((event) => (
           <Link href={`/events/${event.id}`} key={event.id} className="block">
-            <div className="border rounded-lg p-4 hover:shadow-lg transition-shadow">
+            <div className="border rounded-lg p-4 hover:shadow-lg transition-shadow text-center">
               <h2 className="text-xl font-semibold mb-2">{event.show_title}</h2>
-              <p>Start Time: {new Date(event.start_time).toLocaleString()}</p>
-              {event.show_flyer_url && (
-                <img
-                  src={event.show_flyer_url || "/placeholder.svg"}
-                  alt="Show Flyer"
-                  className="mt-2 max-w-full h-auto"
-                />
-              )}
+              <div className="mb-4">
+                <p>
+                  <strong>{new Date(event.start_time).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "2-digit" })} @ {new Date(event.door_time).toLocaleTimeString("en-US", { hour: "numeric", minute: "numeric", hour12: true })}</strong>
+                </p>
+              </div>
+              <img src="/images/event.jpg" alt="Show Flyer" className="w-full h-auto mx-auto max-h-400px" />
             </div>
           </Link>
         ))}
       </div>
     </div>
-    
   )
 }
