@@ -12,6 +12,7 @@ export default function ClientEventDetail({ event }) {
         <p>
           <strong>{new Date(event.start_time).toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "numeric" })} at {new Date(event.door_time).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true })} </strong>
         </p>     
+        
       </div>
       <div className="mb-4 text-center">
       <input type="number" id="quantity" name="quantity" value={quantity} onChange={(e) => setQuantity(e.target.value)} min={1} max={6} className="rounded px-2 py-1 text-center bg-white text-black appearance-none" style={{ MozAppearance: 'textfield', WebkitAppearance: 'number-input' }} /> X $10 <br /> 
@@ -21,8 +22,14 @@ export default function ClientEventDetail({ event }) {
         Buy Now
         </button>
       </div>
-      <img src="/images/event.jpg" alt="Show Flyer" className="w-full max-w-md mx-auto" />
-      <style jsx>{`
+      {event.show_flyer_url && (
+                  <img
+                    src={event.show_flyer_url || "/placeholder.svg"}
+                    alt="Show Flyer"
+                    className="mt-2 max-w-full mx-auto h-auto"
+                  />
+                )}    
+                  <style jsx>{`
         input[type="number"]::-webkit-inner-spin-button,
         input[type="number"]::-webkit-outer-spin-button {
           opacity: 1;

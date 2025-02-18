@@ -21,7 +21,7 @@ const Navigation = () => {
           Red Jacks
         </Link>
         <Link href="/account" className="text-xl text-blood">
-          Account
+          My Tickets
         </Link>
       </div>
     </nav>

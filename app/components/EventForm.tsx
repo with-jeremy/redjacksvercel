@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import type React from "react"
-
-import { useState } from "react"
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
-import { useRouter } from "next/navigation"
+import type React from "react";
+import { useState } from "react";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useRouter } from "next/navigation";
+import { v4 as uuidv4 } from "uuid";
 
 export default function EventForm() {
   const [showTitle, setShowTitle] = useState("")
@@ -28,19 +28,51 @@ export default function EventForm() {
       let showFlyerUrl = ""
 
       if (showFlyer) {
-        const fileExt = showFlyer.name.split(".").pop()
-        const fileName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${fileExt}`
-        const { error: uploadError } = await supabase.storage.from("showPosters").upload(fileName, showFlyer)
+        const fileExt = showFlyer.name.split(".").pop();
+        const fileName = `${uuidv4()}.${fileExt}`; // Use UUID for filename
+        const filePath = `public/${fileName}`; // Store in 'public' folder for global access
 
-        if (uploadError) throw uploadError
+        const { error: uploadError } = await supabase.storage
+          .from("showPosters")
+          .upload(filePath, showFlyer, {
+            cacheControl: "3600",
+            upsert: false,
+          });
 
-        const { data: { publicUrl } } = supabase.storage.from("showPosters").getPublicUrl(fileName)
+        if (uploadError) {
+          console.error("File upload error:", uploadError);
+          throw new Error(`Could not upload image: ${uploadError.message}. Please check your storage bucket policies.`);
+        }
 
-        showFlyerUrl = publicUrl
+        const { data, error: getUrlError } = supabase.storage
+          .from("showPosters")
+          .getPublicUrl(filePath);
+
+        if (getUrlError) {
+          console.error("Error getting public URL:", getUrlError);
+          throw getUrlError; // Or handle appropriately
+        }
+
+        showFlyerUrl = data.publicUrl;
       }
 
-      const user = supabase.auth.user()
-      if (!user) throw new Error("User not authenticated")
+      const { data: user, error: userError } = await supabase.auth.getUser();
+
+      if (userError) {
+        console.error("Error fetching user:", userError);
+        setError("Error fetching user. Please try again.");
+        setIsLoading(false);
+        return;
+      }
+
+      if (!user) {
+        console.error("User not authenticated");
+        setError("User not authenticated. Please log in.");
+        setIsLoading(false);
+        return;
+      }
+
+      console.log("Authenticated user:", user); // Add logging
 
       const { error: insertError } = await supabase.from("events").insert({
         show_title: showTitle,
@@ -50,19 +82,24 @@ export default function EventForm() {
         show_flyer_url: showFlyerUrl,
         price: Number.parseFloat(price),
         user_id: user.id,
-      })
+      }, {
+        returning: "minimal" // Ensure the policy allows the insertion
+      });
 
-      if (insertError) throw insertError
+      if (insertError) {
+        console.error("Database insert error:", insertError);
+        throw new Error(`Could not create event: ${insertError.message}`);
+      }
 
-      router.push("/dashboard")
-      router.refresh()
-    } catch (error) {
-      console.error("Error creating event:", error)
-      setError("Error creating event. Please try again.")
+      router.push("/dashboard");
+      router.refresh();
+    } catch (err: any) {
+      console.error("Error creating event:", err);
+      setError(`Error creating event: ${err.message}`);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -155,5 +192,5 @@ export default function EventForm() {
         {isLoading ? "Creating..." : "Create Event"}
       </button>
     </form>
-  )
+  );
 }

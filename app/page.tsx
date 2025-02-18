@@ -29,7 +29,13 @@ export default async function Home() {
                   <strong>{new Date(event.start_time).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "2-digit" })} @ {new Date(event.door_time).toLocaleTimeString("en-US", { hour: "numeric", minute: "numeric", hour12: true })}</strong>
                 </p>
               </div>
-              <img src="/images/event.jpg" alt="Show Flyer" className="w-full h-auto mx-auto max-h-400px" />
+              {event.show_flyer_url && (
+                  <img
+                    src={event.show_flyer_url || "/placeholder.svg"}
+                    alt="Show Flyer"
+                    className="mt-2 max-w-full h-auto"
+                  />
+                )}
             </div>
           </Link>
         ))}
