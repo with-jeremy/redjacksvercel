@@ -23,7 +23,7 @@ interface Event {
 export default function ClientEventDetail({ event }: { event: Event }) {
   const [quantity, setQuantity] = useState(1);
   const price = event.price;
-  const totalAmount = price * quantity;
+  const amount = price * quantity;
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -49,22 +49,20 @@ export default function ClientEventDetail({ event }: { event: Event }) {
               className="rounded pl-1 ml-2 border border-black py-1 text-center bg-white text-black appearance-none" 
               style={{ MozAppearance: 'textfield', WebkitAppearance: 'number-input' }} 
             /> 
-            {` = $${totalAmount}`}
+            {` = $${amount}`}
           </p>
         </div>
         <div className="text-center">
-          <button className="border rounded px-4 py-2 bg-blood text-black border-blood">
-            <strong>Buy Now</strong>
-          </button>
+         
           <Elements
             stripe={stripePromise}
             options={{
               mode: "payment",
-              currency: "USD",
-              amount: convertToSubcurrency(totalAmount),
+              currency: "usd",
+              amount: convertToSubcurrency(amount),
             }}
           >
-            <CheckoutPage amount={totalAmount} />
+            <CheckoutPage amount={amount} />
           </Elements>
         </div>
       </div>

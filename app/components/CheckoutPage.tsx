@@ -35,8 +35,11 @@ const CheckoutPage = ({ amount }: { amount: number}) => {
         {clientSecret && <PaymentElement />}
 
         {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-        <button>Buy Now</button>
+        <button className="border rounded px-4 py-2 mt-4 bg-blood text-black border-blood">
+            <strong>Buy Now</strong>
+          </button>
       </form>
+    )
   };
 
 export default CheckoutPage;
