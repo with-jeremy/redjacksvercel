@@ -8,6 +8,10 @@ import {
 } from "@stripe/react-stripe-js";
 import { useRouter } from 'next/navigation'; // Update import statement
 import convertToSubcurrency from "@/lib/convertToSubcurrency";
+import { loadStripe } from '@stripe/stripe-js';
+
+// Ensure you are using the test publishable key
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_TEST_PUBLISHABLE_KEY);
 
 const CheckoutPage = ({ amount }: { amount: number}) => {
   const stripe = useStripe();
@@ -53,7 +57,7 @@ const CheckoutPage = ({ amount }: { amount: number}) => {
     <form className="bg-white p-2 rounded-md" onSubmit={handleSubmit}>
       <PaymentElement />
       {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-      <button className="border rounded px-4 py-2 mt-4 bg-blood text-black border-blood" disabled={loading}>
+      <button className="border rounded px-4 py-2 mt-4 bg-blood text-white border-blood" disabled={loading}>
         <strong>{loading ? "Processing..." : "Buy Now"}</strong>
       </button>
     </form>

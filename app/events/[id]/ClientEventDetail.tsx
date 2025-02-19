@@ -90,7 +90,7 @@ export default function ClientEventDetail({ event }: { event: Event }) {
           </p>
           {!checkoutClicked && (
             <button 
-              className="border rounded px-4 py-2 mt-4 bg-blood text-black border-blood"
+              className="border rounded px-4 py-2 mt-4 bg-blood text-white border-blood"
               onClick={handleCheckoutClick} // Add onClick handler
             >
               Checkout
