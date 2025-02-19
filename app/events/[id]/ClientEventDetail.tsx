@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CheckoutPage from "../../components/CheckoutPage";
 import convertToSubcurrency from "@/lib/convertToSubcurrency";
 import { Elements } from "@stripe/react-stripe-js";
@@ -22,8 +22,45 @@ interface Event {
 
 export default function ClientEventDetail({ event }: { event: Event }) {
   const [quantity, setQuantity] = useState(1);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [checkoutClicked, setCheckoutClicked] = useState(false); // New state
+  const [loading, setLoading] = useState(false); // New state
   const price = event.price;
   const amount = price * quantity;
+
+  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value, 10);
+    if (value >= 1 && value <= 6) {
+      setQuantity(value);
+      setError(null);
+    } else if (value > 6) {
+      setQuantity(6);
+      setError("Maximum quantity is 6.");
+    }
+  };
+
+  const handleCheckoutClick = () => {
+    setCheckoutClicked(true);
+    setLoading(true); // Set loading to true when checkout is clicked
+  };
+
+  useEffect(() => {
+    if (checkoutClicked) {
+      fetch("/api/create-payment-intent", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ amount: convertToSubcurrency(amount) }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setClientSecret(data.clientSecret);
+          setLoading(false); // Set loading to false when clientSecret is received
+        });
+    }
+  }, [amount, checkoutClicked]);
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -43,27 +80,31 @@ export default function ClientEventDetail({ event }: { event: Event }) {
               id="quantity" 
               name="quantity" 
               value={quantity} 
-              onChange={(e) => setQuantity(e.target.value)} 
+              onChange={handleQuantityChange} 
               min={1} 
               max={6} 
               className="rounded pl-1 ml-2 border border-black py-1 text-center bg-white text-black appearance-none" 
-              style={{ MozAppearance: 'textfield', WebkitAppearance: 'number-input' }} 
+              style={{ MozAppearance: 'textfield', WebkitAppearance: 'textfield' }} 
             /> 
             {` = $${amount}`}
           </p>
+          {!checkoutClicked && (
+            <button 
+              className="border rounded px-4 py-2 mt-4 bg-blood text-black border-blood"
+              onClick={handleCheckoutClick} // Add onClick handler
+            >
+              Checkout
+            </button>
+          )}
+          {loading && <p>Loading...</p>}
+          {error && <p className="text-red-500">{error}</p>}
         </div>
         <div className="text-center">
-         
-          <Elements
-            stripe={stripePromise}
-            options={{
-              mode: "payment",
-              currency: "usd",
-              amount: convertToSubcurrency(amount),
-            }}
-          >
-            <CheckoutPage amount={amount} />
-          </Elements>
+          {checkoutClicked && clientSecret && (
+            <Elements key={clientSecret} stripe={stripePromise} options={{ clientSecret }}>
+              <CheckoutPage amount={amount} />
+            </Elements>
+          )}
         </div>
       </div>
       {event.show_flyer_url && (
