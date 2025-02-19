@@ -22,13 +22,13 @@ export default async function RootLayout({
 }) {
   const supabase = createServerComponentClient({ cookies })
   const {
-    data: { session },
-  } = await supabase.auth.getSession()
+    data: { user },
+  } = await supabase.auth.getUser()
 
   return (
     <html lang="en">
       <body className={`${inter.className} bg-background text-foreground`}>
-        <AuthProvider initialSession={session}>
+        <AuthProvider initialUser={user}>
           <Navigation />
           <main className="container mx-auto px-4 py-8">{children}</main>
           <footer>

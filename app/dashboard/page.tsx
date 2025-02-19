@@ -40,13 +40,6 @@ export default async function Dashboard() {
                 <p>Door Time: {new Date(event.door_time).toLocaleString()}</p>
                 <p>Start Time: {new Date(event.start_time).toLocaleString()}</p>
                 <p>Capacity: {event.capacity}</p>
-                {event.show_flyer_url && (
-                  <img
-                    src={event.show_flyer_url || "/placeholder.svg"}
-                    alt="Show Flyer"
-                    className="mt-2 max-w-full h-auto"
-                  />
-                )}
               </div>
             </Link>
           ))}
