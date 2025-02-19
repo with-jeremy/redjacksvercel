@@ -1,7 +1,7 @@
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
-import ClientEventDetail from "./ClientEventDetail";
+import TicketPurchase from "./TicketPurchase";
 
 export default async function EventDetail({ params }: { params: { id: string } }) {
   const supabase = createServerComponentClient({ cookies });
@@ -12,5 +12,5 @@ export default async function EventDetail({ params }: { params: { id: string } }
     notFound();
   }
 
-  return <ClientEventDetail event={event} />;
+  return <TicketPurchase event={event} />;
 }

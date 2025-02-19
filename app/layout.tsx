@@ -1,4 +1,5 @@
 import type React from "react"
+import Link from "next/link"
 import "./globals.css"
 import { Inter, Dancing_Script } from "next/font/google"
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
@@ -30,6 +31,11 @@ export default async function RootLayout({
         <AuthProvider initialSession={session}>
           <Navigation />
           <main className="container mx-auto px-4 py-8">{children}</main>
+          <footer>
+            <div className="container mx-auto text-center px-4 py-8">
+            Website by Jeremy@WithJeremy.com - Copyright 2025 <Link href="/dashboard">@</Link> Red Jacks Entertainment
+            </div>
+          </footer>
         </AuthProvider>
       </body>
     </html>

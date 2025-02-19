@@ -20,7 +20,7 @@ interface Event {
   show_flyer_url?: string;
 }
 
-export default function ClientEventDetail({ event }: { event: Event }) {
+export default function TicketPurchase({ event }: { event: Event }) {
   const [quantity, setQuantity] = useState(1);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
